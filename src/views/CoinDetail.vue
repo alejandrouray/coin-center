@@ -25,23 +25,23 @@
               <span>#{{ asset.rank }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio actual</b>
+              <b class="text-gray-600 mr-10 uppercase">Current Price</b>
               <span>{{ asset.priceUsd | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio más bajo</b>
+              <b class="text-gray-600 mr-10 uppercase">Lowest Price</b>
               <span>{{ min | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio más alto</b>
+              <b class="text-gray-600 mr-10 uppercase">Hightest Price</b>
               <span>{{ max | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio Promedio</b>
+              <b class="text-gray-600 mr-10 uppercase">Average Price</b>
               <span>{{ avg | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Variación 24hs</b>
+              <b class="text-gray-600 mr-10 uppercase">Variation 24hs</b>
               <span>{{ asset.changePercent24Hr | percent }}</span>
             </li>
           </ul>
@@ -52,7 +52,7 @@
             @click="toggleConverter"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            {{ fromUsd ? `USD a ${asset.symbol}` : `${asset.symbol} a USD` }}
+            {{ fromUsd ? `USD to ${asset.symbol}` : `${asset.symbol} to USD` }}
           </button>
 
           <div class="flex flex-row my-5">
@@ -62,7 +62,7 @@
                 id="convertValue"
                 type="number"
                 class="text-center bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-                :placeholder="`Valor en ${fromUsd ? 'USD' : asset.symbol}`"
+                :placeholder="`Value in ${fromUsd ? 'USD' : asset.symbol}`"
               />
             </label>
           </div>
@@ -81,7 +81,7 @@
         :data="chartData"
       />
 
-      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <h3 class="text-xl my-10">Best Exchange Offers</h3>
       <table>
         <tr
           v-for="m in markets"
@@ -95,15 +95,16 @@
           <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
           <td>
             <px-button
-              v-if="!m.url"
+              v-if="!m.url && !m.error"
               @click="getWebsite(m)"
               :isLoading="m.isLoading || false"
             >
-              <span v-show="!m.isLoading">Obtener link</span>
+              <span v-show="!m.isLoading">Get link</span>
             </px-button>
             <a v-else class="hover:underline text-green-600" target="_blanck">{{
               m.url
             }}</a>
+            <span v-show="m.error" class="text-red-600">Link not found</span>
           </td>
         </tr>
       </table>
@@ -182,6 +183,9 @@ export default {
         .getExchange(exchange.exchangeId)
         .then((res) => {
           this.$set(exchange, 'url', res.exchangeUrl);
+        })
+        .catch(() => {
+          this.$set(exchange, 'error', 'Link not found');
         })
         .finally(() => this.$set(exchange, 'isLoading', false));
     },

@@ -8,15 +8,15 @@
             >Ranking</span
           >
         </th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Cap. de Mercado</th>
-        <th>Variación 24hs</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Market Capital</th>
+        <th>Variation 24hs</th>
         <td class="hidden sm:block">
           <input
             class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
             id="filter"
-            placeholder="Buscar..."
+            placeholder="Search..."
             type="text"
             v-model="filter"
           />
@@ -66,7 +66,7 @@
         </td>
         <td class="hidden sm:block">
           <px-button @click="goToCoin(a.id)">
-            <span>Detalle</span>
+            <span>Details</span>
           </px-button>
         </td>
       </tr>
