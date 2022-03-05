@@ -1,16 +1,27 @@
-function getAssets() {
-  return fetch('assets?limit=20')
+const fetchData = (resource) => {
+  const BASE_API = 'api.coincap.io/v2/';
+  const CORS_ANYWHERE = 'https://cors-anywhere.herokuapp.com/';
+  const finalUrl = `${CORS_ANYWHERE}${BASE_API}${resource}`;
+
+  return fetch(finalUrl, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  })
     .then((res) => res.json())
     .then((res) => res.data);
-}
+};
 
-function getAsset(coin) {
-  return fetch(`/assets/${coin}?limit=20`)
-    .then((res) => res.json())
-    .then((res) => res.data);
-}
+const getAssets = () => {
+  return fetchData('assets?limit=20');
+};
 
-function getAssetHistory(coin) {
+const getAsset = (coin) => {
+  return fetchData(`assets/${coin}?limit=20`);
+};
+
+const getAssetHistory = (coin) => {
   const now = new Date();
   const end = now.getTime();
 
@@ -18,22 +29,18 @@ function getAssetHistory(coin) {
 
   const start = now.getTime();
 
-  return fetch(`/assets/${coin}/history?interval=h1&start=${start}&end=${end}`)
-    .then((res) => res.json())
-    .then((res) => res.data);
-}
+  return fetchData(
+    `assets/${coin}/history?interval=h1&start=${start}&end=${end}`
+  );
+};
 
-function getMarkets(coin) {
-  return fetch(`/assets/${coin}/markets?limit=5`)
-    .then((res) => res.json())
-    .then((res) => res.data);
-}
+const getMarkets = (coin) => {
+  return fetchData(`assets/${coin}/markets?limit=5`);
+};
 
-function getExchange(id) {
-  return fetch(`/exchanges/${id}`)
-    .then((res) => res.json())
-    .then((res) => res.data);
-}
+const getExchange = (id) => {
+  return fetchData(`exchanges/${id}`);
+};
 
 export default {
   getAssets,
