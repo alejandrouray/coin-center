@@ -29,8 +29,8 @@ export default {
           to: { name: 'coin-detail', params: { id: 'razxDUgYGNAdQ' } },
         },
         {
-          title: 'SOL',
-          to: { name: 'coin-detail', params: { id: 'solana' } },
+          title: 'USDT',
+          to: { name: 'coin-detail', params: { id: 'HIVsRcGKkPFtW' } },
         },
       ],
     };

@@ -14,7 +14,7 @@
         <th>Name</th>
         <th>Price</th>
         <th class="hidden lg:table-cell">Market Cap.</th>
-        <th>Variation 24hs</th>
+        <th>Variation</th>
         <td class="hidden sm:block text-center">
           <input
             class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
@@ -138,13 +138,13 @@ export default {
 
 td {
   padding: 20px 0px;
-  font-size: 0.6rem;
   text-align: center;
+  font-size: 0.8rem;
 }
 
 th {
   padding: 5px;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
 }
 
 @media (min-width: 640px) {
