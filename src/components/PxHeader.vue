@@ -1,19 +1,19 @@
 <template>
   <header class="shadow w-screen">
     <nav>
-      <nav class="flex items-center justify-between flex-wrap bg-green-400 p-6">
+      <nav
+        class="grid grid-cols-1 lg:grid-cols-2 items-center justify-between bg-primary p-6"
+      >
         <div class="flex items-center flex-shrink-0 text-white mr-6">
           <px-icon class="mr-2" />
           <router-link
             :to="{ name: 'home' }"
             class="font-semibold text-xl tracking-tight"
           >
-            PxExchange
+            Coin Center
           </router-link>
         </div>
-        <div
-          class="hidden sm:block w-full blok flex-grow lg:flex lg:items-center lg:wauto"
-        >
+        <div class="justify-self-end hidden lg:block">
           <div class="text-sm lg:flex-grow">
             <router-link
               v-for="l in links"

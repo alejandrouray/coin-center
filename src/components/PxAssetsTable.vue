@@ -1,18 +1,21 @@
 <template>
-  <table>
+  <table class="w-full mx-4">
     <thead>
       <tr class="bg-gray-100 border-b-2 border-gray-400">
-        <th></th>
-        <th :class="{ up: this.sortOrder === 1, down: this.sortOrder === -1 }">
+        <th class="hidden lg:table-cell"></th>
+        <th
+          class="hidden lg:table-cell"
+          :class="{ up: this.sortOrder === 1, down: this.sortOrder === -1 }"
+        >
           <span class="underline cursor-pointer" @click="changeSortOrder"
             >Ranking</span
           >
         </th>
         <th>Name</th>
         <th>Price</th>
-        <th>Market Capital</th>
+        <th class="hidden lg:table-cell">Market Cap.</th>
         <th>Variation 24hs</th>
-        <td class="hidden sm:block">
+        <td class="hidden sm:block text-center">
           <input
             class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
             id="filter"
@@ -29,14 +32,14 @@
         :key="a.id"
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
-        <td>
+        <td class="hidden lg:table-cell">
           <img
             class="w-6 h-6"
             :src="`https://static.coincap.io/assets/icons/${a.symbol.toLowerCase()}@2x.png`"
             :alt="a.name"
           />
         </td>
-        <td>
+        <td class="hidden lg:table-cell">
           <strong># {{ a.rank }}</strong>
         </td>
         <td>
@@ -51,21 +54,17 @@
           >
             {{ a.name }}
           </router-link>
-          <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
+          <small class="hidden lg:inline ml-1 text-gray-500">{{
+            a.symbol
+          }}</small>
         </td>
-        <td>{{ a.priceUsd | dollar }}</td>
-        <td>{{ a.marketCapUsd | dollar }}</td>
-        <td
-          :class="
-            a.changePercent24Hr.includes('-')
-              ? 'text-red-600'
-              : 'text-green-600'
-          "
-        >
-          {{ a.changePercent24Hr | percent }}
+        <td>{{ a.price | dollar }}</td>
+        <td class="hidden lg:block">{{ a.marketCap | dollar }}</td>
+        <td :class="a.change.includes('-') ? 'text-red-600' : 'text-green-600'">
+          {{ a.change | percent }}
         </td>
-        <td class="hidden sm:block">
-          <px-button @click="goToCoin(a.id)">
+        <td class="sm:block">
+          <px-button @click="goToCoin(a.uuid)">
             <span>Details</span>
           </px-button>
         </td>

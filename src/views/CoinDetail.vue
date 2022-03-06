@@ -1,7 +1,7 @@
 <template>
   <div class="flex-col">
     <div class="flex justify-center">
-      <bounce-loader :loading="isLoading" :color="'#68d391'" :size="100" />
+      <bounce-loader :loading="isLoading" :color="'#63b3ed'" :size="100" />
     </div>
 
     <template v-if="!isLoading">
@@ -26,7 +26,7 @@
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Current Price</b>
-              <span>{{ asset.priceUsd | dollar }}</span>
+              <span>{{ asset.price | dollar }}</span>
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Lowest Price</b>
@@ -42,7 +42,7 @@
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Variation 24hs</b>
-              <span>{{ asset.changePercent24Hr | percent }}</span>
+              <span>{{ asset.change | percent }}</span>
             </li>
           </ul>
         </div>
@@ -75,35 +75,39 @@
 
       <line-chart
         class="my-10"
+        prefix="$ "
         :colors="['orange']"
         :min="min"
         :max="max"
         :data="chartData"
+        :precision="5"
       />
 
-      <h3 class="text-xl my-10">Best Exchange Offers</h3>
+      <h3 class="text-xl my-10 px-5 font-bold">Best Exchange Offers</h3>
       <table>
         <tr
           v-for="m in markets"
           :key="`${m.exchangeId}-${m.priceUsd}`"
-          class="border-b"
+          class="border-b grid grid-cols-3 sm:grid-cols-4 items-center justify-center"
         >
-          <td>
-            <strong> {{ m.exchangeId }}</strong>
+          <td class="grid grid-cols-6 items-center">
+            <strong class="col-span-5"> {{ m.name }}</strong>
+            <img
+              class="hidden md:inline h-6 self-center"
+              :src="m.iconUrl"
+              :alt="m.name"
+            />
           </td>
-          <td>{{ m.priceUsd | dollar }}</td>
-          <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
+          <td>{{ m.price | dollar }}</td>
+          <td class="hidden sm:table-cell">{{ m.numberOfMarkets }} markets</td>
           <td>
             <px-button
               v-if="!m.url && !m.error"
               @click="getWebsite(m)"
               :isLoading="m.isLoading || false"
             >
-              <span v-show="!m.isLoading">Get link</span>
+              <span v-show="!m.isLoading">Visit site</span>
             </px-button>
-            <a v-else class="hover:underline text-green-600" target="_blanck">{{
-              m.url
-            }}</a>
             <span v-show="m.error" class="text-red-600">Link not found</span>
           </td>
         </tr>
@@ -136,28 +140,24 @@ export default {
 
   computed: {
     min() {
-      return Math.min(
-        ...this.history.map((h) => parseFloat(h.priceUsd).toFixed(2))
-      );
+      return Math.min(...this.history.map((h) => h.price)).toFixed(3);
     },
 
     max() {
-      return Math.max(
-        ...this.history.map((h) => parseFloat(h.priceUsd).toFixed(2))
-      );
+      return Math.max(...this.history.map((h) => h.price)).toFixed(3);
     },
 
     avg() {
       return (
-        this.history.reduce((a, b) => a + parseFloat(b.priceUsd), 0) /
+        this.history.reduce((a, b) => a + parseFloat(b.price), 0) /
         this.history.length
       );
     },
 
     chartData() {
       return this.history.map((h) => [
-        h.date,
-        parseFloat(h.priceUsd).toFixed(2),
+        new Date(h.timestamp * 1000),
+        parseFloat(h.price),
       ]);
     },
 
@@ -165,8 +165,8 @@ export default {
       if (!this.convertValue) return 0;
 
       const result = this.fromUsd
-        ? this.convertValue / this.asset.priceUsd
-        : this.convertValue * this.asset.priceUsd;
+        ? this.convertValue / this.asset.price
+        : this.convertValue * this.asset.price;
 
       return result.toFixed(4);
     },
@@ -178,30 +178,22 @@ export default {
 
   methods: {
     getWebsite(exchange) {
-      this.$set(exchange, 'isLoading', true);
-      return api
-        .getExchange(exchange.exchangeId)
-        .then((res) => {
-          this.$set(exchange, 'url', res.exchangeUrl);
-        })
-        .catch(() => {
-          this.$set(exchange, 'error', 'Link not found');
-        })
-        .finally(() => this.$set(exchange, 'isLoading', false));
+      window.open(exchange.coinrankingUrl, '_blank');
     },
 
     getCoin() {
       const id = this.$route.params.id;
       this.isLoading = true;
+
       Promise.all([
-        api.getAsset(id),
-        api.getAssetHistory(id),
-        api.getMarkets(id),
+        api.getCoin(id),
+        api.getCoinHistory(id),
+        api.getExchanges(id),
       ])
-        .then(([asset, history, markets]) => {
-          this.asset = asset;
-          this.history = history;
-          this.markets = markets;
+        .then(([asset, history, exchanges]) => {
+          this.asset = asset.coin;
+          this.history = history.history;
+          this.markets = exchanges.exchanges;
         })
         .finally(() => (this.isLoading = false));
     },

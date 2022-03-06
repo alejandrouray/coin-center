@@ -1,51 +1,41 @@
 const fetchData = (resource) => {
-  const BASE_API = 'api.coincap.io/v2/';
-  const CORS_ANYWHERE = 'https://cors-anywhere.herokuapp.com/';
-  const finalUrl = `${CORS_ANYWHERE}${BASE_API}${resource}`;
+  const BASE_API = 'https://coinranking1.p.rapidapi.com/';
+  const finalUrl = `${BASE_API}${resource}`;
 
   return fetch(finalUrl, {
     headers: new Headers({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+      'x-rapidapi-key': '1c15502b8bmsh6cec78706cd33d5p1905bejsn9973d434daa6',
     }),
   })
     .then((res) => res.json())
     .then((res) => res.data);
 };
 
-const getAssets = () => {
-  return fetchData('assets?limit=20');
+const getRanking = () => {
+  return fetchData('coins?limit=20&timePeriod=24h');
 };
 
-const getAsset = (coin) => {
-  return fetchData(`assets/${coin}?limit=20`);
+const getCoin = (id) => {
+  return fetchData(`coin/${id}?timePeriod=24h`);
 };
 
-const getAssetHistory = (coin) => {
-  const now = new Date();
-  const end = now.getTime();
+const getCoinHistory = (id) => {
+  return fetchData(`coin/${id}/history?timePeriod=24h`);
+};
 
-  now.setDate(now.getDate() - 1);
-
-  const start = now.getTime();
-
-  return fetchData(
-    `assets/${coin}/history?interval=h1&start=${start}&end=${end}`
-  );
+const getExchanges = (id) => {
+  return fetchData(`coin/${id}/exchanges?limit=10`);
 };
 
 const getMarkets = (coin) => {
   return fetchData(`assets/${coin}/markets?limit=5`);
 };
 
-const getExchange = (id) => {
-  return fetchData(`exchanges/${id}`);
-};
-
 export default {
-  getAssets,
-  getAsset,
-  getAssetHistory,
   getMarkets,
-  getExchange,
+  getRanking,
+  getCoin,
+  getCoinHistory,
+  getExchanges,
 };

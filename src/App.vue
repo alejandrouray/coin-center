@@ -1,7 +1,9 @@
 <template>
   <main>
     <px-header :links="links" />
-    <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
+    <router-view
+      class="container sm:px-20 md:px-10 lg:px-0 py-10 flex justify-center"
+    />
   </main>
 </template>
 
@@ -20,11 +22,11 @@ export default {
       links: [
         {
           title: 'BTC',
-          to: { name: 'coin-detail', params: { id: 'bitcoin' } },
+          to: { name: 'coin-detail', params: { id: 'Qwsogvtv82FCd' } },
         },
         {
           title: 'ETH',
-          to: { name: 'coin-detail', params: { id: 'ethereum' } },
+          to: { name: 'coin-detail', params: { id: 'razxDUgYGNAdQ' } },
         },
         {
           title: 'SOL',
