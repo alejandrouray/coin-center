@@ -5,7 +5,7 @@ const fetchData = (resource) => {
   return fetch(finalUrl, {
     headers: new Headers({
       'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-      'x-rapidapi-key': '1c15502b8bmsh6cec78706cd33d5p1905bejsn9973d434daa6',
+      'x-rapidapi-key': process.env.VUE_APP_RAPIDAPI_KEY,
     }),
   })
     .then((res) => res.json())
