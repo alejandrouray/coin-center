@@ -27,8 +27,3 @@ npm run serve
 ```
 npm run build
 ```
-
-## Errors in the code?
-```
-npm run lint
-```
